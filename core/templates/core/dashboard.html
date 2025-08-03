@@ -1,0 +1,347 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}GRES | Profile{% endblock %}
+
+{% block content %}
+    <!-- Navigation Bar -->
+    <nav id="navbar" class="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-40" style="display: none;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-claude-600">TaskTide</h1>
+                </div>
+                
+                <!-- Logged in navigation -->
+                <div id="logged-in-nav" class="hidden flex space-x-4">
+                    <a href="#" onclick="showPage('dashboard')" class="text-gray-700 hover:text-claude-600 px-3 py-2 rounded-md transition-colors">Home</a>
+                    <a href="#" onclick="showPage('create-task')" class="text-gray-700 hover:text-claude-600 px-3 py-2 rounded-md transition-colors">Create Task</a>
+                    <a href="#" onclick="showPage('all-tasks')" class="text-gray-700 hover:text-claude-600 px-3 py-2 rounded-md transition-colors">All Tasks</a>
+                    <a href="#" onclick="showPage('completed-tasks')" class="text-gray-700 hover:text-claude-600 px-3 py-2 rounded-md transition-colors">Completed</a>
+                    <a href="#" onclick="showPage('incomplete-tasks')" class="text-gray-700 hover:text-claude-600 px-3 py-2 rounded-md transition-colors">Incomplete</a>
+                    <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors">Logout</button>
+                </div>
+                
+                <!-- Logged out navigation -->
+                <div id="logged-out-nav" class="flex space-x-4">
+                    <a href="#" onclick="showPage('login')" class="text-gray-700 hover:text-claude-600 px-3 py-2 rounded-md transition-colors">Login</a>
+                    <a href="#" onclick="showPage('register')" class="btn-primary text-white px-4 py-2 rounded-md">Register</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style="display: none;">
+        
+        <!-- Login Page -->
+        <div id="login-page" class="page-content hidden">
+            <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-8 scale-in">
+                <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">Welcome Back</h2>
+                <form class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Username or Email</label>
+                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-claude-500 focus:border-transparent transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-claude-500 focus:border-transparent transition-all">
+                    </div>
+                    <button type="submit" class="w-full btn-primary text-white py-3 rounded-md font-medium">Sign In</button>
+                </form>
+                <p class="text-center text-gray-600 mt-6">
+                    Don't have an account? 
+                    <a href="#" onclick="showPage('register')" class="text-claude-600 hover:text-claude-700 font-medium">Sign up</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Register Page -->
+        <div id="register-page" class="page-content hidden">
+            <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-8 scale-in">
+                <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">Create Account</h2>
+                <form class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-claude-500 focus:border-transparent transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-claude-500 focus:border-transparent transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-claude-500 focus:border-transparent transition-all">
+                    </div>
+                    <button type="submit" class="w-full btn-primary text-white py-3 rounded-md font-medium">Create Account</button>
+                </form>
+                <p class="text-center text-gray-600 mt-6">
+                    Already have an account? 
+                    <a href="#" onclick="showPage('login')" class="text-claude-600 hover:text-claude-700 font-medium">Sign in</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard-page" class="page-content hidden">
+            <div class="fade-in">
+                <div class="bg-white rounded-lg shadow-md p-8 mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Welcome back, John! 👋</h2>
+                    <p class="text-gray-600 mb-6">Here's what you have planned today.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-claude-50 p-6 rounded-lg">
+                            <h3 class="text-lg font-semibold text-claude-700 mb-2">Total Tasks</h3>
+                            <p class="text-3xl font-bold text-claude-600">12</p>
+                        </div>
+                        <div class="bg-green-50 p-6 rounded-lg">
+                            <h3 class="text-lg font-semibold text-green-700 mb-2">Completed</h3>
+                            <p class="text-3xl font-bold text-green-600">8</p>
+                        </div>
+                        <div class="bg-orange-50 p-6 rounded-lg">
+                            <h3 class="text-lg font-semibold text-orange-700 mb-2">Pending</h3>
+                            <p class="text-3xl font-bold text-orange-600">4</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="showPage('create-task')" class="btn-primary text-white px-6 py-3 rounded-md font-medium">Create New Task</button>
+                        <button onclick="showPage('all-tasks')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-md font-medium transition-colors">View All Tasks</button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-6">Recent Tasks</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Complete project proposal</h4>
+                                <p class="text-sm text-gray-600">Due today</p>
+                            </div>
+                            <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium">Pending</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Review team feedback</h4>
+                                <p class="text-sm text-gray-600">Completed yesterday</p>
+                            </div>
+                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">✅ Complete</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Task Page -->
+        <div id="create-task-page" class="page-content hidden">
+            <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8 scale-in">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8">Create New Task</h2>
+                <form class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Task Title</label>
+                        <input type="text" placeholder="Enter task title..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-claude-500 focus:border-transparent transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea rows="4" placeholder="Describe your task..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-claude-500 focus:border-transparent transition-all resize-none"></textarea>
+                    </div>
+                    <div class="flex gap-4">
+                        <button type="submit" class="btn-primary text-white px-6 py-3 rounded-md font-medium">Create Task</button>
+                        <button type="button" onclick="showPage('dashboard')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-md font-medium transition-colors">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- All Tasks Page -->
+        <div id="all-tasks-page" class="page-content hidden">
+            <div class="fade-in">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900">All Tasks</h2>
+                    <button onclick="showPage('create-task')" class="btn-primary text-white px-6 py-3 rounded-md font-medium">Add New Task</button>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <input type="text" placeholder="Search tasks..." class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-claude-500 focus:border-transparent">
+                                <select class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-claude-500">
+                                    <option>All Status</option>
+                                    <option>Completed</option>
+                                    <option>Incomplete</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="divide-y divide-gray-200">
+                        <!-- Sample tasks -->
+                        <div class="task-card p-6 hover:bg-gray-50 transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <input type="checkbox" class="h-4 w-4 text-claude-600 focus:ring-claude-500 border-gray-300 rounded">
+                                    <div>
+                                        <h3 class="text-lg font-medium text-gray-900">Complete project proposal</h3>
+                                        <p class="text-gray-600">Finish the Q4 project proposal and submit to management team for review.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium">❌ Incomplete</span>
+                                    <button onclick="showPage('edit-task')" class="text-claude-600 hover:text-claude-700 px-3 py-1 rounded transition-colors">Edit</button>
+                                    <button onclick="showPage('delete-task')" class="text-red-600 hover:text-red-700 px-3 py-1 rounded transition-colors">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="task-card p-6 hover:bg-gray-50 transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <input type="checkbox" checked class="h-4 w-4 text-claude-600 focus:ring-claude-500 border-gray-300 rounded">
+                                    <div>
+                                        <h3 class="text-lg font-medium text-gray-900 line-through">Review team feedback</h3>
+                                        <p class="text-gray-600">Go through all team feedback from last sprint and create action items.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">✅ Complete</span>
+                                    <button onclick="showPage('edit-task')" class="text-claude-600 hover:text-claude-700 px-3 py-1 rounded transition-colors">Edit</button>
+                                    <button onclick="showPage('delete-task')" class="text-red-600 hover:text-red-700 px-3 py-1 rounded transition-colors">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="task-card p-6 hover:bg-gray-50 transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <input type="checkbox" class="h-4 w-4 text-claude-600 focus:ring-claude-500 border-gray-300 rounded">
+                                    <div>
+                                        <h3 class="text-lg font-medium text-gray-900">Update documentation</h3>
+                                        <p class="text-gray-600">Update all project documentation with recent changes and improvements.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium">❌ Incomplete</span>
+                                    <button onclick="showPage('edit-task')" class="text-claude-600 hover:text-claude-700 px-3 py-1 rounded transition-colors">Edit</button>
+                                    <button onclick="showPage('delete-task')" class="text-red-600 hover:text-red-700 px-3 py-1 rounded transition-colors">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed Tasks Page -->
+        <div id="completed-tasks-page" class="page-content hidden">
+            <div class="fade-in">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8">Completed Tasks</h2>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="divide-y divide-gray-200">
+                        <div class="task-card p-6 hover:bg-gray-50 transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <input type="checkbox" checked class="h-4 w-4 text-claude-600 focus:ring-claude-500 border-gray-300 rounded">
+                                    <div>
+                                        <h3 class="text-lg font-medium text-gray-900 line-through">Review team feedback</h3>
+                                        <p class="text-gray-600">Go through all team feedback from last sprint and create action items.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">✅ Complete</span>
+                                    <button onclick="showPage('edit-task')" class="text-claude-600 hover:text-claude-700 px-3 py-1 rounded transition-colors">Edit</button>
+                                    <button onclick="showPage('delete-task')" class="text-red-600 hover:text-red-700 px-3 py-1 rounded transition-colors">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Incomplete Tasks Page -->
+        <div id="incomplete-tasks-page" class="page-content hidden">
+            <div class="fade-in">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8">Incomplete Tasks</h2>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="divide-y divide-gray-200">
+                        <div class="task-card p-6 hover:bg-gray-50 transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <input type="checkbox" class="h-4 w-4 text-claude-600 focus:ring-claude-500 border-gray-300 rounded">
+                                    <div>
+                                        <h3 class="text-lg font-medium text-gray-900">Complete project proposal</h3>
+                                        <p class="text-gray-600">Finish the Q4 project proposal and submit to management team for review.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium">❌ Incomplete</span>
+                                    <button onclick="showPage('edit-task')" class="text-claude-600 hover:text-claude-700 px-3 py-1 rounded transition-colors">Edit</button>
+                                    <button onclick="showPage('delete-task')" class="text-red-600 hover:text-red-700 px-3 py-1 rounded transition-colors">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="task-card p-6 hover:bg-gray-50 transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <input type="checkbox" class="h-4 w-4 text-claude-600 focus:ring-claude-500 border-gray-300 rounded">
+                                    <div>
+                                        <h3 class="text-lg font-medium text-gray-900">Update documentation</h3>
+                                        <p class="text-gray-600">Update all project documentation with recent changes and improvements.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium">❌ Incomplete</span>
+                                    <button onclick="showPage('edit-task')" class="text-claude-600 hover:text-claude-700 px-3 py-1 rounded transition-colors">Edit</button>
+                                    <button onclick="showPage('delete-task')" class="text-red-600 hover:text-red-700 px-3 py-1 rounded transition-colors">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Task Page -->
+        <div id="edit-task-page" class="page-content hidden">
+            <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8 scale-in">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8">Edit Task</h2>
+                <form class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Task Title</label>
+                        <input type="text" value="Complete project proposal" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-claude-500 focus:border-transparent transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-claude-500 focus:border-transparent transition-all resize-none">Finish the Q4 project proposal and submit to management team for review.</textarea>
+                    </div>
+                    <div class="flex gap-4">
+                        <button type="submit" class="btn-primary text-white px-6 py-3 rounded-md font-medium">Update Task</button>
+                        <button type="button" onclick="showPage('all-tasks')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-md font-medium transition-colors">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Delete Task Page -->
+        <div id="delete-task-page" class="page-content hidden">
+            <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-8 scale-in">
+                <div class="text-center">
+                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                        <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Delete Task</h3>
+                    <p class="text-sm text-gray-500 mb-6">Are you sure you want to delete "Complete project proposal"? This action cannot be undone.</p>
+                    <div class="flex space-x-4">
+                        <button onclick="showPage('all-tasks')" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md font-medium transition-colors">Yes, Delete</button>
+                        <button onclick="showPage('all-tasks')" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md font-medium transition-colors">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+{% endblock %} 

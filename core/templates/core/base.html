@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link href="{% static 'css/main.css' %}" rel="stylesheet" />
+    <title>
+      {% block title %}TaskTide{% endblock %}
+    </title>
+      <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'claude': {
+                            50: '#f0f4ff',
+                            100: '#e0e9ff',
+                            200: '#c7d8ff',
+                            300: '#a4bdff',
+                            400: '#8098ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        .slide-up { animation: slideUp 0.3s ease-out; }
+        .scale-in { animation: scaleIn 0.2s ease-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .loader {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #6366f1;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+    </style>
+  </head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Welcome Loader -->
+    <div id="welcome-loader" class="fixed inset-0 bg-claude-600 flex items-center justify-center z-50">
+        <div class="text-center text-white">
+            <div class="loader mx-auto mb-4 border-white border-t-claude-200"></div>
+            <h2 class="text-2xl font-semibold mb-2">Welcome to TaskFlow</h2>
+            <p class="text-claude-200">Loading your workspace...</p>
+        </div>
+    </div>
+    {% if messages %}
+      <div class="fixed top-8 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-3 items-center w-full pointer-events-none">
+        {% for message in messages %}
+          <div id="flash-messages" class="fixed top-20 right-4 z-50 space-y-2">           
+             {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% block content %} {% endblock %}
+    <script src="{% static 'js/main.js' %}"></script>
+  </body>
+</html>
