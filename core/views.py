@@ -1,27 +1,45 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from users.forms import CustomUserCreationForm
 
-# Create your views here.
 
+
+# Homepage view
 def home(request):
     return render(request, 'core/home.html')
 
+# Login page view
 def register(request):
-    return render(request, 'core/register.html')
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, F'Account created successfully!')
+            return redirect('login')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'core/auth/register.html', {'form':form})
 
-def login(request):
-    return render(request, 'core/login.html')
+@login_required
+def profile(request):
+    return render(request, 'core/dashboard/profile.html')
+
+
+@login_required
+def settings(request):
+    return render(request, 'core/dashboard/settings.html')
+
+
+# Dashboard overview page
 
 def overview(request):
     return render(request, 'core/dashboard/overview.html')
 
-def all_tasks(request):
-    return render(request, 'core/dashboard/all_tasks.html')
-
-def create_tasks(request):
-    return render(request, 'core/dashboard/create_task.html')
-
+# Completed task page
 def completed_tasks(request):
     return render(request, 'core/dashboard/completed_task.html')
 
+# Incompleted task page
 def incomplete_tasks(request):
     return render(request, 'core/dashboard/incomplete_task.html')

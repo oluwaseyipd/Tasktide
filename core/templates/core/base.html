@@ -35,6 +35,8 @@
         }
     </script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
         .fade-in { animation: fadeIn 0.5s ease-in; }
         .slide-up { animation: slideUp 0.3s ease-out; }
         .scale-in { animation: scaleIn 0.2s ease-out; }
@@ -85,19 +87,13 @@
     </style>
   </head>
 <body class="bg-gray-50 min-h-screen">
-    <!-- Welcome Loader -->
-    <div id="welcome-loader" class="fixed inset-0 bg-claude-600 flex items-center justify-center z-50">
-        <div class="text-center text-white">
-            <div class="loader mx-auto mb-4 border-white border-t-claude-200"></div>
-            <h2 class="text-2xl font-semibold mb-2">Welcome to TaskFlow</h2>
-            <p class="text-claude-200">Loading your workspace...</p>
-        </div>
-    </div>
     {% if messages %}
-      <div class="fixed top-8 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-3 items-center w-full pointer-events-none">
+      <div class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-3 items-center w-full pointer-events-none">
         {% for message in messages %}
-          <div id="flash-messages" class="fixed top-20 right-4 z-50 space-y-2">           
-             {{ message }}
+          <div id="flash-messages"
+               class="mx-auto bg-white shadow-lg rounded-xl px-6 py-4 font-semibold text-center fade-in border w-fit min-w-[250px] max-w-[90vw]
+               {% if 'success' in message.tags %}text-orange-700 border-orange-200{% elif 'error' in message.tags %}text-red-700 border-red-200{% elif 'warning' in message.tags %}text-yellow-700 border-yellow-200{% else %}text-claude-700 border-claude-200{% endif %}">
+            {{ message }}
           </div>
         {% endfor %}
       </div>
