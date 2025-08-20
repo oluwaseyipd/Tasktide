@@ -1,4 +1,5 @@
 {% extends "core/base.html" %}
+{% load tailwind_filters %}
 {% load static %}
 {% block content %}
 
@@ -14,9 +15,9 @@
     <form method="POST" class="w-full space-y-5">
       {% csrf_token %}
       <div class="space-y-5">
-        {{ form.as_p }}
+        {{ form|crispy }}
       </div>
-      <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl shadow transition-all">Create Account</button>
+      <button type="submit" class="w-full mt-5 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl shadow transition-all">Create Account</button>
     </form>
     <div class="mt-6 text-center">
       <p class="text-gray-500 text-sm">Already have an account?

@@ -3,14 +3,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from . import views
-from tasks.views import TaskListView, TaskDetailView, TaskCreateView, TaskUpdateView, TaskDeleteView
+from tasks.views import TaskListView, TaskDetailView, TaskCreateView, TaskUpdateView, TaskDeleteView, CompleteTaskListView
+from tasks import views as task_views
 
 urlpatterns = [
 
+    path("tasks/<int:pk>/toggle/", task_views.toggle_task_complete, name="toggle_task"),
     # Dashboard views
     path('dashboard/settings/', views.settings, name='settings'),
-    path('dashboard/completed/', views.completed_tasks, name='completed_tasks'),
-    path('dashboard/incomplete/', views.incomplete_tasks, name='incomplete_tasks'),
+    path('dashboard/completed/', CompleteTaskListView.as_view(), name='completed_tasks'),
     path('dashboard/tasks/<int:pk>/delete/', TaskDeleteView.as_view(), name='delete_task'),
     path('dashboard/tasks/<int:pk>/', TaskDetailView.as_view(), name='single_task'),
     path('dashboard/tasks/<int:pk>/edit/', TaskUpdateView.as_view(), name='update_task'),

@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     "tasks",
     "users",
     "core",
+    "crispy_forms",
+    "crispy_tailwind",
     "widget_tweaks",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -44,6 +46,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+
+CRISPY_TEMPLATE_PACK = "tailwind"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

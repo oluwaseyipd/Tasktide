@@ -39,7 +39,3 @@ def overview(request):
 # Completed task page
 def completed_tasks(request):
     return render(request, 'core/dashboard/completed_task.html')
-
-# Incompleted task page
-def incomplete_tasks(request):
-    return render(request, 'core/dashboard/incomplete_task.html')

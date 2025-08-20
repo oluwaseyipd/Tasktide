@@ -4,9 +4,10 @@
   <div class="fade-in space-y-6">
     <!-- Welcome Section -->
     <div
-      class="bg-gradient-to-r from-claude-500 to-claude-600 rounded-xl p-8 text-white"
+    style=" background: linear-gradient(135deg, #dc2626 0%, #ea580c  100%);"
+      class="rounded-xl p-8 text-white"
     >
-      <h2 class="text-3xl text-black font-bold mb-2">Welcome back, {{ user.first_name }}!</h2>
+      <h2 class="text-3xl text-white font-bold mb-2">Welcome back, {{ user.first_name }}!</h2>
       <p class="text-claude-100 mb-6">
         You have 4 tasks pending today. Let's get them done!
       </p>
@@ -28,7 +29,7 @@
             <p class="text-sm font-medium text-gray-600">Total Tasks</p>
             <p class="text-3xl font-bold text-gray-900">24</p>
           </div>
-          <div class="p-3 bg-claude-100 rounded-lg">
+          <div class="p-3 bg-orange-100 rounded-lg">
             <i class="fas fa-tasks w-6 h-6 text-claude-600"></i>
           </div>
         </div>
@@ -179,21 +180,21 @@
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
         <div class="space-y-3">
-          <button
-            onclick="showPage('create-task')"
+          <a
+            href="{% url 'create_tasks' %}"
             class="w-full flex items-center space-x-3 p-3 text-left bg-claude-50 hover:bg-claude-100 rounded-lg transition-colors"
           >
-            <div class="p-2 bg-claude-600 rounded-lg">
+            <div class="p-2 bg-orange-600 rounded-lg">
               <i class="fas fa-plus w-4 h-4 text-white"></i>
             </div>
             <div>
               <p class="font-medium text-gray-900">Create Task</p>
               <p class="text-sm text-gray-600">Add a new task</p>
             </div>
-          </button>
+          </a>
 
-          <button
-            onclick="showPage('all-tasks')"
+          <a
+           href="{% url 'all_tasks' %}"
             class="w-full flex items-center space-x-3 p-3 text-left bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <div class="p-2 bg-gray-600 rounded-lg">
@@ -203,10 +204,10 @@
               <p class="font-medium text-gray-900">View All Tasks</p>
               <p class="text-sm text-gray-600">Manage your tasks</p>
             </div>
-          </button>
+          </a>
 
-          <button
-            onclick="showPage('completed-tasks')"
+          <a
+            href="{% url 'completed_tasks' %}"
             class="w-full flex items-center space-x-3 p-3 text-left bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
           >
             <div class="p-2 bg-green-600 rounded-lg">
@@ -216,10 +217,10 @@
               <p class="font-medium text-gray-900">Completed Tasks</p>
               <p class="text-sm text-gray-600">18 tasks done</p>
             </div>
-          </button>
+          </a>
 
-          <button
-            onclick="showPage('profile')"
+          <a
+            href="{% url 'profile' %}"
             class="w-full flex items-center space-x-3 p-3 text-left bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors"
           >
             <div class="p-2 bg-purple-600 rounded-lg">
@@ -229,7 +230,7 @@
               <p class="font-medium text-gray-900">Profile Settings</p>
               <p class="text-sm text-gray-600">Update your info</p>
             </div>
-          </button>
+          </a>
         </div>
       </div>
     </div>

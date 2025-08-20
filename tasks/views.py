@@ -1,4 +1,8 @@
 from django.urls import reverse_lazy
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -11,7 +15,20 @@ class TaskListView(ListView):
     template_name = 'core/dashboard/all_tasks.html'
     context_object_name = 'tasks'
     ordering = ['-created_at']
-    paginate_by = 2
+    paginate_by = 8
+
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user, completed=False).order_by('-created_at')
+
+class CompleteTaskListView(LoginRequiredMixin, ListView):
+    model = Task
+    template_name = 'core/dashboard/completed_task.html'
+    context_object_name = 'tasks'
+
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user, completed=True)
+
+    
 
 class TaskDetailView(DetailView):
     model = Task
@@ -27,7 +44,9 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
     
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        messages.success(self.request, "Task created successfully")
+        return response
 
 class TaskUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Task
@@ -57,3 +76,14 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == task.user:
             return True
         return False 
+
+@login_required
+@require_POST
+def toggle_task_complete(request, pk):
+    try:
+        task = Task.objects.get(pk=pk, user=request.user)
+        task.completed = not task.completed   # toggle
+        task.save()
+        return JsonResponse({"success": True, "completed": task.completed})
+    except Task.DoesNotExist:
+        return JsonResponse({"success": False}, status=404)

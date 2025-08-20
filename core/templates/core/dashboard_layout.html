@@ -160,6 +160,13 @@
         }
       }
 
+      .btn{
+         background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
+      }
+      .btn:hover{
+         background: linear-gradient(135deg, #e76620 0%, #f04e4e 100%);
+      }
+
       /* Create task button styling */
       .create-task-btn {
         display: inline-flex;
@@ -248,14 +255,6 @@
           >
             <i class="fas fa-check-circle w-5 h-5"></i>
             <span class="font-medium">Completed</span>
-          </a>
-
-          <a
-            href="{% url 'incomplete_tasks' %}"
-            class="sidebar-item flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
-          >
-            <i class="fas fa-times-circle w-5 h-5"></i>
-            <span class="font-medium">Incomplete</span>
           </a>
 
           <div class="border-t border-gray-200 my-4"></div>
