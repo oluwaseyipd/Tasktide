@@ -1,8 +1,8 @@
 {% extends "core/dashboard_layout.html" %} {% load static %} {% block content %}
 {% load tailwind_filters %}
 <!-- Create Task Page -->
-<div class="mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  <div class="max-w-2xl scale-in">
+<div class="flex justify-center px-4 sm:px-6 lg:px-8 py-8">
+  <div class="max-w-2xl w-full scale-in">
     <div class="mb-6">
       <h2 class="text-2xl font-bold text-gray-900">Create New Task</h2>
       <p class="text-gray-600 mt-1">Add a new task to your workflow</p>
@@ -63,7 +63,7 @@
 
         <div class="flex gap-4 pt-4">
           <a
-            href="{% url 'create_tasks' %}"
+            href="{% url 'all_tasks' %}"
             class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-8 py-3 rounded-lg font-medium transition-colors"
           >
             Cancel

@@ -49,6 +49,16 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
+
+REST_FRAMEWORK = {
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
+    ]
+}
+
+
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 
 CRISPY_TEMPLATE_PACK = "tailwind"
@@ -142,3 +152,5 @@ MEDIA_URL = '/media/'
 
 LOGIN_REDIRECT_URL = 'overview'
 LOGIN_URL = 'login'
+
+

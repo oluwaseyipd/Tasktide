@@ -1,7 +1,87 @@
 {% extends "core/dashboard_layout.html" %} {% load static %} {% block content %}
 
 <!-- All Tasks Page -->
-<div class="mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+
+<style>
+  /* Add these CSS styles for smooth animations */
+
+/* Base task card styling with transitions */
+.task-card {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: top;
+  opacity: 1;
+  max-height: 200px; /* Adjust based on your card height */
+  overflow: hidden;
+}
+
+/* Fade out animation */
+.task-fade-out {
+  opacity: 0;
+  transform: translateX(-20px) scale(0.95);
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* Alternative slide-up animation (choose one) */
+.task-slide-out {
+  opacity: 0;
+  transform: translateY(-20px);
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Smooth checkbox transition */
+.task-card input[type="checkbox"] {
+  transition: transform 0.2s ease;
+}
+
+.task-card input[type="checkbox"]:checked {
+  transform: scale(1.1);
+}
+
+/* Title strikethrough animation */
+.task-card h3 {
+  transition: all 0.3s ease;
+}
+
+.task-card h3.line-through {
+  text-decoration: line-through;
+  opacity: 0.6;
+  color: #9CA3AF;
+}
+
+/* Hover effects */
+.task-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Fade-in animation for new tasks */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.task-card.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+</style>
+
+
+<div 
+id="all-tasks-page"
+class="mx-auto px-4 sm:px-6 lg:px-8 py-8">
   <div class="fade-in">
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-2xl font-bold text-gray-900">All Tasks</h2>
@@ -25,7 +105,9 @@
             <div class="relative">
               <input
                 type="text"
+                name = "search"
                 placeholder="Search tasks..."
+                value = "{{ request.GET.search }}"
                 class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-claude-500 focus:border-transparent w-64"
               />
               <i
@@ -33,12 +115,12 @@
               ></i>
             </div>
             <select
+            name="status">
               class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-claude-500"
             >
-              <option>All Status</option>
-              <option>Completed</option>
-              <option>In Progress</option>
-              <option>Overdue</option>
+              <option value="">All</option>
+              <option value="pending" {% if request.GET.status == "pending" %}selected{% endif %}>Pending</option>
+              <option value="overdue" {% if request.GET.status == "overdue" %}selected{% endif %}>Overdue</option>
             </select>
           </div>
           <div class="text-sm text-gray-600">Showing {{ tasks.count }} tasks</div>
@@ -48,48 +130,55 @@
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
       <div class="divide-y divide-gray-200">
 
-        {% for task in tasks %}
-        <div 
-        class="task-card p-6 hover:bg-gray-50 transition-all duration-200">
-          <div class="flex items-center justify-between">
-            <a 
-        href="{% url 'single_task' task.id %}" 
-            class="flex items-center space-x-4">
-              <input type="checkbox" checked
-                class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded" />
-              <div class="flex-1">
-                <h3 class="text-lg font-medium text-gray-900 line-through">
-                  {{ task.title }}
-                </h3>
-                {% if task.description %}
-                <p class="text-gray-600 mt-1">{{ task.description }}</p>
-                {% endif %}
-                <div class="flex items-center space-x-4 mt-2 text-sm text-gray-500">
-                  <span>Completed: {{ task.updated_at|date:"M d, Y H:i" }}</span>
-                </div>
-              </div>
-            </a>
-            <div class="flex items-center space-x-3">
-              <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
-                ✅ Completed
-              </span>
-              <div class="flex items-center space-x-2">
-                <a href="{% url 'update_task' task.pk %}"
-                  class="text-green-600 hover:text-green-700 p-2 rounded-lg hover:bg-green-50 transition-colors">
-                  <i class="fas fa-edit w-4 h-4"></i>
-                </a>
-                <a href="{% url 'delete_task' task.pk %}"
-                  class="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors">
-                  <i class="fas fa-trash-alt w-4 h-4"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-        {% empty %}
-        <p class="p-6 text-gray-500 text-center">You don't have any task. Create a new task</p>
-        {% endfor %}
 
+{% for task in tasks %}
+<div 
+  id="task-{{ task.id }}"
+  class="task-card p-6 hover:bg-gray-50 transition-all duration-200">
+  <div class="flex items-center justify-between">
+    <a 
+      href="{% url 'single_task' task.id %}" 
+      class="flex items-center space-x-4">
+      <input 
+        type="checkbox"
+        data-task-id="{{ task.id }}"
+        class="task-toggle h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+        {% if task.completed %}checked{% endif %} />
+      <div class="flex-1">
+        <h3 class="text-lg font-medium text-gray-900 {% if task.completed %}line-through{% endif %}">
+          {{ task.title }}
+        </h3>
+        {% if task.description %}
+        <p class="text-gray-600 mt-1">{{ task.description }}</p>
+        {% endif %}
+        <div class="flex items-center space-x-4 mt-2 text-sm text-gray-500">
+          <span>Due: {{ task.due_date|date:"M d, Y H:i" }}</span>
+        </div>
+      </div>
+    </a>
+    <div class="flex items-center space-x-3">
+      {% if task.completed %}
+      <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+        ✅ Completed
+      </span>
+      {% endif %}
+      <div class="flex items-center space-x-2">
+        <a href="{% url 'update_task' task.pk %}"
+          class="text-green-600 hover:text-green-700 p-2 rounded-lg hover:bg-green-50 transition-colors">
+          <i class="fas fa-edit w-4 h-4"></i>
+        </a>
+        <a href="{% url 'delete_task' task.pk %}"
+          class="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors">
+          <i class="fas fa-trash-alt w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% empty %}
+<p class="p-6 text-gray-500 text-center">You don't have any task. Create a new task</p>
+{% endfor %}
+        <audio id="pop-sound" src="{% static 'sounds/pop-sound.mp3' %}" preload="auto"></audio>
       </div>
     </div>
     </div>
@@ -118,80 +207,6 @@
     </nav>
   {% endif %}
 </div>
-
 </div>
-<script>
-function toggleTask(taskId, isChecked) {
-  fetch(`/tasks/${taskId}/toggle/`, {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": getCookie("csrftoken"),
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ completed: isChecked }),
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      const taskCard = document.querySelector(`#task-${taskId}`);
-
-      if (data.completed) {
-        // Smooth fade out before removing
-        taskCard.style.transition = "opacity 0.5s ease, transform 0.5s ease";
-        taskCard.style.opacity = "0";
-        taskCard.style.transform = "translateX(30px)";
-        setTimeout(() => {
-          taskCard.remove();
-        }, 500); // wait until fade completes
-      } else {
-        // If you ever want to "uncomplete" and bring it back, you can handle that differently
-        taskCard.querySelector("h3").classList.remove("line-through");
-      }
-    } else {
-      alert("Something went wrong!");
-    }
-  });
-}
-
-
-  // Helper to get CSRF token
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-      const cookies = document.cookie.split(";");
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.startsWith(name + "=")) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  }
-
-  // Apply overdue styling on page load
-  document.addEventListener("DOMContentLoaded", function() {
-    const cards = document.querySelectorAll(".task-card");
-
-    cards.forEach(card => {
-      const status = card.dataset.status;
-      const dueDate = new Date(card.dataset.dueDate);
-      const today = new Date();
-
-      if (status === "incomplete" && dueDate < today) {
-        card.style.borderColor = "red";  // highlight overdue task
-      }
-    });
-  });
-
-function playPop() {
-  const popSound = document.getElementById("pop-sound");
-  popSound.currentTime = 0; // restart if it's already playing
-  popSound.play();
-}
-</script>
-
-
 
 {% endblock %}

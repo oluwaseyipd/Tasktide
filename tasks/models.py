@@ -12,12 +12,6 @@ class Task(models.Model):
         ("urgent", "Urgent"),
     ]
 
-    STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('completed', 'Completed'),
-        ('overdue', 'Overdue'),
-    ]
-
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tasks")
     title = models.CharField(max_length=300)
     description = models.TextField(blank=True, null=True)
@@ -40,8 +34,8 @@ class Task(models.Model):
     @property
     def status(self):
         if self.completed:
-            return "completed"
-        elif self.due_date < timezone.now():
-            return "overdue"
+            return "Completed"
+        elif self.due_date and self.due_date < timezone.now():
+            return "Overdue"
         else:
-            return "pending"
+            return "Pending"

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from users.forms import CustomUserCreationForm
@@ -25,12 +25,3 @@ def register(request):
 def settings(request):
     return render(request, 'core/dashboard/settings.html')
 
-
-# Dashboard overview page
-
-def overview(request):
-    return render(request, 'core/dashboard/overview.html')
-
-# Completed task page
-def completed_tasks(request):
-    return render(request, 'core/dashboard/completed_task.html')
