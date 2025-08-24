@@ -6,6 +6,8 @@ from django.contrib import messages
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from rest_framework import generics, permissions
+from .serializers import TaskSerializer
 from .models import Task
 from .forms import TaskCreationForm
 
@@ -87,3 +89,22 @@ def toggle_task_complete(request, pk):
         return JsonResponse({"success": True, "completed": task.completed})
     except Task.DoesNotExist:
         return JsonResponse({"success": False}, status=404)
+
+
+class TaskListCreateAPI(generics.ListCreateAPIView):
+    serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class TaskDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user)

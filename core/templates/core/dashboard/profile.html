@@ -1,10 +1,10 @@
-{% extends "core/dashboard_layout.html" %} {% load static %} {% block content %}
+{% extends "core/dashboard_layout.html" %} {% load tailwind_filters %} {% load static %} {% block content %}
 
  <!-- Profile Page -->
                     <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8n">
                         <div class="fade-in">
                             <!-- Profile Banner -->
-                            <div class="relative bg-gradient-to-r from-claude-500 via-claude-600 to-purple-600 rounded-xl overflow-hidden mb-8">
+                            <div class="relative bg-gradient-to-r from-claude-500 via-claude-600 to-purple-600 rounded-xl overflow-hidden mb-16">
                                 <div class="absolute inset-0 bg-black bg-opacity-20"></div>
                                 <div class="relative h-48 flex items-end p-8">
                                     <div class="text-white">
@@ -20,31 +20,42 @@
                                         Change Banner
                                     </button>
                                 </div>
+                                
+                                <!-- Overlapping Profile Picture -->
+                                <div class="absolute -bottom-16 left-8">
+                                    <div class="relative">
+                                        <div class="w-32 h-32 bg-gradient-to-br from-claude-500 to-claude-600 rounded-full flex items-center justify-center text-white text-4xl font-bold shadow-lg border-4 border-white">
+                                            J
+                                        </div>
+                                        <!-- Profile Picture Edit Overlay -->
+                                        <button class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-40 rounded-full flex items-center justify-center transition-all group">
+                                            <svg class="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Profile Information Card -->
                             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                                 <!-- Profile Header -->
-                                <div class="relative p-8 pb-6">
-                                    <!-- Profile Picture Section -->
-                                    <div class="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6 mb-6">
-                                        <div class="relative">
-                                            <div class="w-24 h-24 bg-gradient-to-br from-claude-500 to-claude-600 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-                                                J
+                                <div class="relative p-8 pt-20 pb-6">
+                                    <!-- User Info -->
+                                    <div class="flex flex-col md:flex-row md:items-start md:justify-between mb-6">
+                                        <div class="flex-1 mb-4 md:mb-0">
+                                            <div class="flex items-center justify-between mb-4">
+                                                <h2 class="text-2xl font-bold text-gray-900">John Doe</h2>
+                                                <!-- Edit Profile Button -->
+                                                <button id="edit-profile-btn" class="btn text-white px-6 py-3 rounded-lg font-medium flex items-center space-x-2 transition-all hover:shadow-lg">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                    </svg>
+                                                    <span>Edit Profile</span>
+                                                </button>
                                             </div>
-                                            <!-- Profile Picture Edit Overlay -->
-                                            <button class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-40 rounded-full flex items-center justify-center transition-all group">
-                                                <svg class="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                        
-                                        <!-- User Info -->
-                                        <div class="flex-1">
-                                            <h2 class="text-2xl font-bold text-gray-900 mb-2">John Doe</h2>
-                                            <p class="text-gray-600 mb-3 leading-relaxed">
+                                            <p class="text-gray-600 mb-3 leading-relaxed max-w-2xl">
                                                 Passionate product designer and task management enthusiast. I love creating efficient workflows and helping teams stay organized. Always looking for ways to optimize productivity! 🚀
                                             </p>
                                             <div class="flex items-center space-x-4 text-sm text-gray-500">
@@ -63,14 +74,6 @@
                                                 </span>
                                             </div>
                                         </div>
-
-                                        <!-- Edit Profile Button -->
-                                        <button onclick="toggleEditForm()" id="edit-profile-btn" class="btn-primary text-white px-6 py-3 rounded-lg font-medium flex items-center space-x-2 transition-all hover:shadow-lg">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                            </svg>
-                                            <span>Edit Profile</span>
-                                        </button>
                                     </div>
 
                                     <!-- Profile Details Grid -->
@@ -164,16 +167,18 @@
                                                 <h3 class="text-lg font-semibold text-gray-900">Edit Profile Information</h3>
                                                 <p class="text-sm text-gray-600 mt-1">Update your personal details and preferences</p>
                                             </div>
-                                            <button onclick="toggleEditForm()" class="text-gray-400 hover:text-gray-600 transition-colors">
-                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                                </svg>
-                                            </button>
                                         </div>
 
                                         <!-- This is where the Django form will be inserted -->
-                                        <div class="bg-white rounded-lg p-6 border border-gray-200">
-
+                                        <div class="max-w-2xl mx-auto bg-white rounded-lg p-6 border border-gray-200">
+                                                <form method="POST" class="space-y-5">
+                                                {% csrf_token %}
+                                                <div>
+                                                    {{ user_form|crispy }}
+                                                     {{ profile_form|crispy }}
+                                                </div>
+                                                <button type="submit" class="w-full mt-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl shadow transition-all">Save Changes</button>
+                                                </form>
                                         </div>
                                     </div>
                                 </div>
@@ -238,5 +243,14 @@
                             </div>
                         </div>
                     </main>
+
+                    <script>
+                        document.getElementById('edit-profile-btn').addEventListener('click', function() {
+  const editSection = document.getElementById('edit-profile-form');
+  editSection.classList.remove('hidden');
+  editSection.classList.add('fade-in');
+  editSection.scrollIntoView({ behavior: 'smooth' });
+});
+                    </script>
 
 {% endblock %}

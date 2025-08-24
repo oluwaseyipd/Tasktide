@@ -3,14 +3,19 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from . import views
-from tasks.views import TaskListView, TaskDetailView, TaskCreateView, TaskUpdateView, TaskDeleteView, CompleteTaskListView
+from tasks.views import TaskListView, TaskDetailView, TaskCreateView, TaskUpdateView, TaskDeleteView, CompleteTaskListView, TaskDetailAPI, TaskListCreateAPI
 from tasks import views as task_views
-
+from users import views as user_views
 urlpatterns = [
+
+
+    path('api/tasks/', TaskListCreateAPI.as_view(), name='api_tasks'),
+    path('api/tasks/<int:pk>/', TaskDetailAPI.as_view(), name='api_task_detail'),
 
     path("tasks/<int:pk>/toggle/", task_views.toggle_task_complete, name="toggle_task"),
     # Dashboard views
     path('dashboard/settings/', views.settings, name='settings'),
+    path('dashboardprofile/', user_views.profile, name='profile'),
     path('dashboard/completed/', CompleteTaskListView.as_view(), name='completed_tasks'),
     path('dashboard/tasks/<int:pk>/delete/', TaskDeleteView.as_view(), name='delete_task'),
     path('dashboard/tasks/<int:pk>/', TaskDetailView.as_view(), name='single_task'),
@@ -18,7 +23,6 @@ urlpatterns = [
     path('dashboard/create/', TaskCreateView.as_view(), name='create_tasks'),
     path('dashboard/tasks/', TaskListView.as_view(), name='all_tasks'),
     path('dashboard/', views.overview, name='overview'),
-    path('profile/', views.profile, name='profile'),
 
     # Authentication views
     path('register/', views.register, name='register'),

@@ -22,11 +22,6 @@ def register(request):
     return render(request, 'core/auth/register.html', {'form':form})
 
 @login_required
-def profile(request):
-    return render(request, 'core/dashboard/profile.html')
-
-
-@login_required
 def settings(request):
     return render(request, 'core/dashboard/settings.html')
 
