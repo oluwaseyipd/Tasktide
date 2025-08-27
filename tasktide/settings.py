@@ -9,36 +9,30 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-# User: testing
-# Token: d2e3d3318e630978469ab0ac3904a54962f9680b
 
 import os
-
 from pathlib import Path
-
 from decouple import config
-
-
-DEBUG = config('DEBUG', default=False, cast=bool)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-r@ztm6=x+)=--=tpdtx#hcvh0v&^13b5ep6#hn9a51+mu1@0!("
+# Use environment variable for production, fallback for development
+SECRET_KEY = config('SECRET_KEY', default="django-insecure-r@ztm6=x+)=--=tpdtx#hcvh0v&^13b5ep6#hn9a51+mu1@0!(")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = os.environ.get("DEBUG", "0") == "1"
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['Oluwaseyiae.pythonanywhere.com', 'localhost']
+# Updated ALLOWED_HOSTS for Render
+ALLOWED_HOSTS = [
+    'localhost', 
+    '127.0.0.1',
+    '.render.com',  # This allows all Render subdomains
+    'Oluwaseyiae.pythonanywhere.com'  # Keep your existing PythonAnywhere host
+]
 
 # Application definition
-
 INSTALLED_APPS = [
     "tasks",
     "users",
@@ -56,7 +50,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
-
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
@@ -72,13 +65,12 @@ REST_FRAMEWORK = {
     ],
 }
 
-
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
-
 CRISPY_TEMPLATE_PACK = "tailwind"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Add this for static files on Render
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -106,35 +98,50 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "tasktide.wsgi.application"
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+# Database configuration
+# Use PostgreSQL on Render, MySQL on PythonAnywhere, SQLite for local development
+if 'DATABASE_URL' in os.environ:
+    # Render PostgreSQL configuration
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
     }
-}
-
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Oluwaseyiae$tasktide',
-        'USER': 'Oluwaseyiae',
-        'PASSWORD': 'kdomgeorgia20',
-        'HOST': 'Oluwaseyiae.mysql.pythonanywhere-services.com',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+elif 'RENDER' in os.environ:
+    # Render environment without DATABASE_URL (fallback)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DB_NAME', default='tasktide'),
+            'USER': config('DB_USER', default='postgres'),
+            'PASSWORD': config('DB_PASSWORD', default=''),
+            'HOST': config('DB_HOST', default='localhost'),
+            'PORT': config('DB_PORT', default='5432'),
+        }
     }
-}
-
+elif 'pythonanywhere' in os.environ.get('HOSTNAME', '').lower():
+    # PythonAnywhere MySQL configuration
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'Oluwaseyiae$tasktide',
+            'USER': 'Oluwaseyiae',
+            'PASSWORD': config('PYTHONANYWHERE_DB_PASSWORD', default='kdomgeorgia20'),
+            'HOST': 'Oluwaseyiae.mysql.pythonanywhere-services.com',
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
+    }
+else:
+    # Local development SQLite
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -150,53 +157,61 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_TZ = True
 
+# Static files configuration
+STATIC_URL = '/static/'
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = "static/"
-
-# Use different paths for local vs production
-import socket
-hostname = socket.gethostname()
-
-if 'pythonanywhere' in hostname or 'Oluwaseyiae' in hostname:
+# Environment-specific static file settings
+if 'RENDER' in os.environ:
+    # Render static files configuration
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+elif 'pythonanywhere' in os.environ.get('HOSTNAME', '').lower():
     # PythonAnywhere settings
     STATIC_ROOT = '/home/Oluwaseyiae/mysite/static'
 else:
     # Local development settings
     STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Static directories
 static_dir = BASE_DIR / "static"
 if static_dir.exists():
     STATICFILES_DIRS = [static_dir]
 else:
     STATICFILES_DIRS = []
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+# Media files configuration
+if 'RENDER' in os.environ:
+    # For Render, you might want to use cloud storage like AWS S3 for media files
+    # For now, using local storage (not recommended for production)
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    MEDIA_URL = '/media/'
+elif 'pythonanywhere' in os.environ.get('HOSTNAME', '').lower():
+    # PythonAnywhere media settings
+    MEDIA_ROOT = '/home/Oluwaseyiae/mysite/media'
+    MEDIA_URL = '/media/'
+else:
+    # Local development
+    MEDIA_ROOT = BASE_DIR / 'media'
+    MEDIA_URL = '/media/'
 
+# Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
-# CUSTOM CONFIGURATIONS
-MEDIA_ROOT = '/home/Oluwaseyiae/mysite/media'
-MEDIA_URL = '/media/'
-
+# Authentication
 LOGIN_REDIRECT_URL = 'overview'
 LOGIN_URL = 'login'
 
-
+# Security settings for production
+if not DEBUG:
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    SECURE_HSTS_SECONDS = 86400
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
