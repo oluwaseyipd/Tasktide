@@ -25,12 +25,12 @@ SECRET_KEY = config('SECRET_KEY', default="django-insecure-r@ztm6=x+)=--=tpdtx#h
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 # Updated ALLOWED_HOSTS for Render
+
 ALLOWED_HOSTS = [
-    'localhost', 
-    '127.0.0.1',
-    '.render.com',  # This allows all Render subdomains
-    'Oluwaseyiae.pythonanywhere.com'  # Keep your existing PythonAnywhere host
+    "tasktide-5bx6.onrender.com",  # Render domain
+    "127.0.0.1", "localhost"       # for local dev
 ]
+
 
 # Application definition
 INSTALLED_APPS = [
