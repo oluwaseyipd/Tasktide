@@ -3,6 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 from django.contrib.auth import views as auth_views
+from rest_framework.authtoken.views import obtain_auth_token
 from . import views
 from tasks.views import TaskListView, TaskDetailView, TaskCreateView, TaskUpdateView, TaskDeleteView, CompleteTaskListView, task_overview
 from tasks import views as task_views
@@ -15,8 +16,9 @@ router = DefaultRouter()
 router.register(r'tasks', TaskViewSet, basename='task')
 
 urlpatterns = [
-    # API routes
-    path('api/', include(router.urls)),
+        # API routes
+     path('api/', include(router.urls)),   # tasks API
+    path('api/users/', include('users.urls')),
 
     path("tasks/<int:pk>/toggle/", task_views.toggle_task_complete, name="toggle_task"),
     # Dashboard views
