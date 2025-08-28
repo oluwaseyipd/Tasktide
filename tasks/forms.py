@@ -1,7 +1,7 @@
 from django import forms
 from .models import Task
 
-
+# Task creation form
 class TaskCreationForm(forms.ModelForm):
     PRIORITY_CHOICES = [
         ("low", "Low"),

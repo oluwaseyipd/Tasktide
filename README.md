@@ -89,8 +89,8 @@ All endpoints are prefixed with `/api/`
 ```json
 {
   "username": "testinguser",
+  "email": "testing@example.com",
   "password": "usertesting123",
-  "confirm_password":"usertesting123"
 }
 ```
 
@@ -98,8 +98,12 @@ All endpoints are prefixed with `/api/`
 
 ```json
 {
-  "username": "testinguser",
-  "password": "usertesting123"
+  {
+    "username": "testinguser",
+    "email": "testing@example.com",
+    "password": "usertesting123"
+  },
+  "token": "26a4df6a68bef633f0ee66a1f7afd677291a41a2"
 }
 ```
 

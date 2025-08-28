@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 
+# Task model
 class Task(models.Model):
     PRIORITY_CHOICES = [
         ("low", "Low"),

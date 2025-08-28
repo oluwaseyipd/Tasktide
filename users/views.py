@@ -30,6 +30,7 @@ def profile(request):
     return render(request, 'core/dashboard/profile.html', context)
 
 
+# User Registration for API testing
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer

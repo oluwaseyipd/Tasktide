@@ -14,7 +14,7 @@ from .serializers import TaskSerializer
 from .models import Task
 from .forms import TaskCreationForm
 
-
+# Task views
 class TaskListView(ListView):
     model = Task
     template_name = 'core/dashboard/all_tasks.html'
@@ -35,6 +35,7 @@ class TaskListView(ListView):
         
         return queryset
 
+# Completed tasks view
 class CompleteTaskListView(LoginRequiredMixin, ListView):
     model = Task
     template_name = 'core/dashboard/completed_task.html'
@@ -43,13 +44,14 @@ class CompleteTaskListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Task.objects.filter(user=self.request.user, completed=True).order_by('-created_at')
 
-    
 
+# Task detail view
 class TaskDetailView(DetailView):
     model = Task
     template_name = 'core/dashboard/single_task.html'
 
 
+# Task creation view
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
     form_class = TaskCreationForm
@@ -62,7 +64,9 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         response = super().form_valid(form)
         messages.success(self.request, "Task created successfully")
         return response
+    
 
+# Task update view
 class TaskUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Task
     form_class = TaskCreationForm
@@ -79,8 +83,9 @@ class TaskUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         if self.request.user == task.user:
             return True
         return False 
+    
 
-
+# Task deletion view
 class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Task
     template_name = 'core/dashboard/delete_task.html'
@@ -91,8 +96,9 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == task.user:
             return True
         return False 
+    
 
-
+# Task viewset
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -115,6 +121,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     ordering = ["created_at"]  # default order
 
 
+# Task overview page 
 @login_required
 def task_overview(request):
     user = request.user
@@ -138,6 +145,8 @@ def task_overview(request):
     }
     return render(request, 'core/dashboard/overview.html', context)
 
+
+# Task completion toggle
 @login_required
 @require_POST
 def toggle_task_complete(request, pk):
