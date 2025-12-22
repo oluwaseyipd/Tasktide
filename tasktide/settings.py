@@ -36,14 +36,6 @@ ALLOWED_HOSTS = [
     "localhost",  # for local dev
 ]
 
-# Set your production domain(s) and local dev hosts
-ALLOWED_HOSTS = [
-    "tasktide-5bx6.onrender.com",  # Production domain
-    "127.0.0.1",
-    "localhost",
-]
-
-
 # Application definition
 INSTALLED_APPS = [
     "tasks",
@@ -234,3 +226,6 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
+
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
