@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
+
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -19,10 +20,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Use environment variable for production, fallback for development
-SECRET_KEY = config('SECRET_KEY', default="django-insecure-r@ztm6=x+)=--=tpdtx#hcvh0v&^13b5ep6#hn9a51+mu1@0!(")
+SECRET_KEY = config(
+    "SECRET_KEY",
+    default="django-insecure-r@ztm6=x+)=--=tpdtx#hcvh0v&^13b5ep6#hn9a51+mu1@0!(",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config("DEBUG", default=False, cast=bool)
 
 # Updated ALLOWED_HOSTS for Render
 
@@ -31,18 +35,18 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 #     "127.0.0.1", "localhost"       # for local dev
 # ]
 
-ALLOWED_HOSTS = ["*"]
-
+# Set your production domain(s) and local dev hosts
+ALLOWED_HOSTS = [
+    "tasktide-5bx6.onrender.com",  # Production domain
+    "127.0.0.1",
+    "localhost",
+]
 
 
 # Application definition
 INSTALLED_APPS = [
     "tasks",
     "users",
-    "core",
-    "crispy_forms",
-    "crispy_tailwind",
-    "widget_tweaks",
     "rest_framework.authtoken",
     "rest_framework",
     "django.contrib.admin",
@@ -59,21 +63,26 @@ REST_FRAMEWORK = {
         "rest_framework.filters.SearchFilter",
         "rest_framework.filters.OrderingFilter",
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.UserRateThrottle",
+        "rest_framework.throttling.AnonRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "user": "1000/day",
+        "anon": "100/day",
+    },
 }
-
-CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
-CRISPY_TEMPLATE_PACK = "tailwind"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # Add this for static files on Render
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -84,6 +93,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "tasktide.urls"
 
+WSGI_APPLICATION = "tasktide.wsgi.application"
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -91,6 +102,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
@@ -99,39 +111,36 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "tasktide.wsgi.application"
-
 # Database configuration
 # Use PostgreSQL on Render, MySQL on PythonAnywhere, SQLite for local development
-if 'DATABASE_URL' in os.environ:
+if "DATABASE_URL" in os.environ:
     # Render PostgreSQL configuration
     import dj_database_url
-    DATABASES = {
-        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
-    }
-elif 'RENDER' in os.environ:
+
+    DATABASES = {"default": dj_database_url.parse(os.environ.get("DATABASE_URL"))}
+elif "RENDER" in os.environ:
     # Render environment without DATABASE_URL (fallback)
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': config('DB_NAME', default='tasktide'),
-            'USER': config('DB_USER', default='postgres'),
-            'PASSWORD': config('DB_PASSWORD', default=''),
-            'HOST': config('DB_HOST', default='localhost'),
-            'PORT': config('DB_PORT', default='5432'),
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": config("DB_NAME", default="tasktide"),
+            "USER": config("DB_USER", default="postgres"),
+            "PASSWORD": config("DB_PASSWORD", default=""),
+            "HOST": config("DB_HOST", default="localhost"),
+            "PORT": config("DB_PORT", default="5432"),
         }
     }
-elif 'pythonanywhere' in os.environ.get('HOSTNAME', '').lower():
+elif "pythonanywhere" in os.environ.get("HOSTNAME", "").lower():
     # PythonAnywhere MySQL configuration
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'Oluwaseyiae$tasktide',
-            'USER': 'Oluwaseyiae',
-            'PASSWORD': config('PYTHONANYWHERE_DB_PASSWORD', default='kdomgeorgia20'),
-            'HOST': 'Oluwaseyiae.mysql.pythonanywhere-services.com',
-            'OPTIONS': {
-                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": "Oluwaseyiae$tasktide",
+            "USER": "Oluwaseyiae",
+            "PASSWORD": config("PYTHONANYWHERE_DB_PASSWORD", default="kdomgeorgia20"),
+            "HOST": "Oluwaseyiae.mysql.pythonanywhere-services.com",
+            "OPTIONS": {
+                "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
             },
         }
     }
@@ -167,19 +176,19 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files configuration
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 
 # Environment-specific static file settings
-if 'RENDER' in os.environ:
+if "RENDER" in os.environ:
     # Render static files configuration
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-elif 'pythonanywhere' in os.environ.get('HOSTNAME', '').lower():
+    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+elif "pythonanywhere" in os.environ.get("HOSTNAME", "").lower():
     # PythonAnywhere settings
-    STATIC_ROOT = '/home/Oluwaseyiae/mysite/static'
+    STATIC_ROOT = "/home/Oluwaseyiae/mysite/static"
 else:
     # Local development settings
-    STATIC_ROOT = BASE_DIR / 'staticfiles'
+    STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Static directories
 static_dir = BASE_DIR / "static"
@@ -189,32 +198,38 @@ else:
     STATICFILES_DIRS = []
 
 # Media files configuration
-if 'RENDER' in os.environ:
+if "RENDER" in os.environ:
     # For Render, you might want to use cloud storage like AWS S3 for media files
     # For now, using local storage (not recommended for production)
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-    MEDIA_URL = '/media/'
-elif 'pythonanywhere' in os.environ.get('HOSTNAME', '').lower():
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+    MEDIA_URL = "/media/"
+elif "pythonanywhere" in os.environ.get("HOSTNAME", "").lower():
     # PythonAnywhere media settings
-    MEDIA_ROOT = '/home/Oluwaseyiae/mysite/media'
-    MEDIA_URL = '/media/'
+    MEDIA_ROOT = "/home/Oluwaseyiae/mysite/media"
+    MEDIA_URL = "/media/"
 else:
     # Local development
-    MEDIA_ROOT = BASE_DIR / 'media'
-    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / "media"
+    MEDIA_URL = "/media/"
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# CORS
+CORS_ALLOW_ALL_ORIGINS = True
+
+# drf-yasg (Swagger/OpenAPI) settings can be further customized as needed
+
 # Authentication
-LOGIN_REDIRECT_URL = 'overview'
-LOGIN_URL = 'login'
 
 # Security settings for production
 if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
-    X_FRAME_OPTIONS = 'DENY'
-    SECURE_HSTS_SECONDS = 86400
+    X_FRAME_OPTIONS = "DENY"
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
