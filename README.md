@@ -1,26 +1,36 @@
-# Tasktide
+# TaskTide API
 
-A simple and efficient **Task Management API** built with **Django** and **Django REST Framework**. Tasktide allows users to **create, read, update, and delete (CRUD)** tasks with authentication and token-based access.
+TaskTide is a modern, production-ready **Task Management API** built with **Django** and **Django REST Framework**. It provides secure, scalable endpoints for managing tasks and users, designed for seamless integration with any frontend (web, mobile, etc.).
+
+---
 
 ## Features
 
-- 🔑 User registration and login with token authentication
-- ✅ Create, retrieve, update, and delete tasks
-- 📌 Mark tasks as completed
-- 🔍 Filter tasks by status (completed/pending)
-- 🌐 Deployed and accessible online
+- 🔑 **User Registration & Token Authentication**
+- ✅ **CRUD Operations** for tasks
+- 📌 **Mark tasks as completed**
+- 🔍 **Filter, search, and order tasks**
+- 🗂️ **Pagination** for scalable data access
+- 🚦 **Rate limiting** for security and stability
+- 🌍 **CORS support** for frontend integration
+- 🛡️ **Production-grade security** (HTTPS, HSTS, secure cookies)
+- 📝 **Interactive API documentation** (Swagger/OpenAPI)
+- 🛠️ **Admin interface** for data management
+
+---
 
 ## Technology Stack
 
-- **Backend Framework:** Django
-- **API:** Django REST Framework
-- **Database:** PostgreSQL
+- **Backend:** Django 5.x, Django REST Framework
+- **Database:** PostgreSQL (recommended), SQLite/MySQL (dev/fallback)
 - **Authentication:** Token-based (DRF authtoken)
-- **Deployment:** Render
+- **Deployment:** Render.com (recommended), supports any cloud
+- **Documentation:** drf-yasg (Swagger/OpenAPI)
+- **Testing:** Automated with DRF’s APIClient
+
+---
 
 ## Getting Started
-
-Follow these steps to run Tasktide locally.
 
 ### Prerequisites
 
@@ -31,155 +41,170 @@ Follow these steps to run Tasktide locally.
 ### Installation
 
 1. **Clone the repository**
-
-```bash
-git clone https://github.com/oluwaseyipd/Tasktide.git
-cd Tasktide
-```
+    ```bash
+    git clone https://github.com/oluwaseyipd/Tasktide.git
+    cd Tasktide
+    ```
 
 2. **Create a virtual environment**
-
-```bash
-python -m venv venv
-source venv/bin/activate   # On Windows: venv\Scripts\activate
-```
+    ```bash
+    python -m venv venv
+    source venv/bin/activate   # On Windows: venv\Scripts\activate
+    ```
 
 3. **Install dependencies**
-
-```bash
-pip install -r requirements.txt
-```
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 4. **Set up environment variables**
-
-Create a `.env` file in the project root:
-
-```env
-DATABASE_URL="postgres://user:password@host:port/database_name"
-SECRET_KEY="your-secret-key"
-DEBUG=True
-```
+    Create a `.env` file in the project root:
+    ```env
+    DATABASE_URL="postgres://user:password@host:port/database_name"
+    SECRET_KEY="your-secret-key"
+    DEBUG=True
+    ```
 
 5. **Run migrations**
-
-```bash
-python manage.py migrate
-```
+    ```bash
+    python manage.py migrate
+    ```
 
 6. **Start the development server**
+    ```bash
+    python manage.py runserver
+    ```
 
-```bash
-python manage.py runserver
-```
+The API will be accessible at: **http://127.0.0.1:8000/**
 
-The API will now be accessible at: **http://127.0.0.1:8000/**
+---
+
+## API Documentation
+
+Interactive docs available at:
+
+- **Swagger UI:** `/swagger/`
+- **ReDoc:** `/redoc/`
+
+---
 
 ## API Endpoints
 
-All endpoints are prefixed with `/api/`
+All endpoints are prefixed with `/api/`.
 
 ### Authentication
 
 #### Register a new user
 
-- **URL:** `/api/users/register/`
-- **Method:** `POST`
-- **Request Body:**
-
-```json
-{
-  "username": "testinguser",
-  "email": "testing@example.com",
-  "password": "usertesting123",
-}
-```
-
-- **Response:**
-
-```json
-{
-  {
-    "username": "testinguser",
-    "email": "testing@example.com",
-    "password": "usertesting123"
-  },
-  "token": "26a4df6a68bef633f0ee66a1f7afd677291a41a2"
-}
-```
+- **POST** `/api/users/register/`
+    ```json
+    {
+      "username": "testinguser",
+      "email": "testing@example.com",
+      "password": "usertesting123"
+    }
+    ```
+    **Response:**
+    ```json
+    {
+      "user": {
+        "username": "testinguser",
+        "email": "testing@example.com"
+      },
+      "token": "26a4df6a68bef633f0ee66a1f7afd677291a41a2"
+    }
+    ```
 
 #### Login (Get Token)
 
-- **URL:** `/api/users/login/`
-- **Method:** `POST`
-- **Request Body:**
+- **POST** `/api/users/login/`
+    ```json
+    {
+      "username": "testinguser",
+      "password": "usertesting123"
+    }
+    ```
+    **Response:**
+    ```json
+    {
+      "token": "3a1f7e4c9d1a23..."
+    }
+    ```
 
-```json
-{
-  "username": "testinguser",
-  "password": "usertesting123"
-}
-```
-
-- **Response:**
-
-```json
-{
-  "token": "3a1f7e4c9d1a23..."
-}
-```
-
-Use this token in **Postman/clients**:
-
+**Use this token in API requests:**
 ```
 Authorization: Token <your-token>
 ```
+
+---
 
 ### Tasks
 
 #### List all tasks / Create new task
 
-- **URL:** `/api/tasks/`
-- **Methods:** `GET`, `POST`
-
-**POST Request Body:**
-
-```json
-{
-  "title": "Document Tasktide",
-  "description": "Write the README.md file."
-}
-```
-
-**Response:**
-
-```json
-{
-  "id": 1,
-  "title": "Document Tasktide",
-  "description": "Write the README.md file.",
-  "completed": false,
-  "created_at": "2025-08-26T10:00:00Z"
-}
-```
+- **GET, POST** `/api/tasks/`
+    - **POST Request Body:**
+        ```json
+        {
+          "title": "Document TaskTide",
+          "description": "Write the README.md file.",
+          "priority": "medium"
+        }
+        ```
+    - **Response:**
+        ```json
+        {
+          "id": 1,
+          "title": "Document TaskTide",
+          "description": "Write the README.md file.",
+          "priority": "medium",
+          "completed": false,
+          "created_at": "2025-08-26T10:00:00Z"
+        }
+        ```
 
 #### Retrieve, Update, or Delete a Task
 
-- **URL:** `/api/tasks/<id>/`
-- **Methods:** `GET`, `PUT`, `PATCH`, `DELETE`
+- **GET, PUT, PATCH, DELETE** `/api/tasks/<id>/`
+    - **PATCH Request Body (mark as completed):**
+        ```json
+        {
+          "completed": true
+        }
+        ```
+    - **DELETE Response:** `204 No Content`
 
-**PATCH Request Body (mark as completed):**
+#### Filtering, Searching, Ordering, Pagination
 
-```json
-{
-  "completed": true
-}
-```
+- **Filter by status:** `/api/tasks/?completed=true`
+- **Search by title/description:** `/api/tasks/?search=Document`
+- **Order by due date:** `/api/tasks/?ordering=due_date`
+- **Paginate:** `/api/tasks/?page=2`
 
-**DELETE Response:** `204 No Content`
+---
 
 ## Deployment
 
-Tasktide is deployed on **Render** and accessible at: **https://tasktide-5bx6.onrender.com**
+TaskTide is production-ready and recommended for deployment on **Render.com**.
+
+- **Managed PostgreSQL**
+- **Automatic HTTPS**
+- **Easy environment variable management**
+- **Git-based CI/CD**
+
+See [Render documentation](https://render.com/docs/deploy-django) for step-by-step deployment.
+
+---
+
+## Testing
+
+Run automated tests with:
+
+```bash
+python manage.py test
+```
+
+---
 
 ## Contributing
 
@@ -191,6 +216,10 @@ Contributions are welcome! 🚀
 4. Push to branch (`git push origin feature-name`)
 5. Open a Pull Request
 
+---
+
 ## License
 
 This project is licensed under the **MIT License**.
+
+---
