@@ -30,10 +30,11 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 
 # Updated ALLOWED_HOSTS for Render
 
-# ALLOWED_HOSTS = [
-#     "tasktide-5bx6.onrender.com",  # Render domain
-#     "127.0.0.1", "localhost"       # for local dev
-# ]
+ALLOWED_HOSTS = [
+    "tasktide-w810.onrender.com",  # Render domain
+    "127.0.0.1",
+    "localhost",  # for local dev
+]
 
 # Set your production domain(s) and local dev hosts
 ALLOWED_HOSTS = [
